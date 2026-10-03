@@ -1,0 +1,126 @@
+import type { PlatformCfg } from "./types";
+
+export const mineralsCfg: PlatformCfg = {
+  id: "minerals",
+  brandName: "HMH ILA Minerals",
+  brandTag: "Cooperative export platform",
+  siteTitle: "HMH ILA Minerals - Cooperative Export Platform",
+  provinceLabel: "North West Province, small-scale mining and cooperatives",
+  homeBlurb:
+    "Small-scale miners join a registered cooperative. The cooperative aggregates, grades and sells through one compliant channel - to local smelters and refiners first, and to verified importers - with royalties captured and miners paid on proof of sale.",
+  defaultModule: "gov",
+  modules: [
+    { id: "overview", name: "Provincial overview", group: "Leadership" },
+    { id: "gov", name: "Government dashboard", group: "Leadership", sub: "MEC view" },
+    { id: "bank", name: "Bank dashboard", group: "Leadership", sub: "Banks and DFIs" },
+    { id: "finance", name: "Funds and royalties", group: "Leadership", sub: "Payments, royalties, pre-export finance" },
+    { id: "coop", name: "Cooperative registry", group: "Miners and cooperatives", sub: "Cooperative and miner registry" },
+    { id: "permit", name: "Licences and compliance", group: "Miners and cooperatives", sub: "Licences and compliance" },
+    { id: "assay", name: "Sampling and grading", group: "Operations", sub: "Sampling, lab and grading" },
+    { id: "chain", name: "Chain of custody", group: "Operations", sub: "Chain of custody" },
+    { id: "trade", name: "Buyers and trade", group: "Markets", sub: "Importers and local buyers" },
+    { id: "sight", name: "Prices and risk", group: "Intelligence", sub: "Prices and risk" },
+    { id: "shield", name: "Site security", group: "Intelligence", sub: "Stockpile and site security" },
+    { id: "vetting", name: "Vetting and credit", group: "Trust and compliance", sub: "KYC, KYB, AML, Flex HMH" },
+    { id: "esg", name: "ESG, ESD and carbon", group: "Trust and compliance" },
+    { id: "market", name: "Market and trading", group: "Markets and payments", sub: "Want to buy, want to sell" },
+    { id: "gateway", name: "Payments gateway", group: "Markets and payments" },
+  ],
+
+  who: "small-scale miner",
+  whoPl: "miners and cooperatives",
+  alloc: 60e6,
+  stopped: 2.1e6,
+  govIntro:
+    "For the MECs for Finance and Economic Development: every rand of pre-funding to small-scale miners and cooperatives traced from budget to site to sale, with royalties captured and the whole chain auditable.",
+  districts: ["Bojanala Platinum", "Ngaka Modiri Molema", "Dr Ruth Segomotsi Mompati", "Dr Kenneth Kaunda"],
+  parties: [
+    "Bophirima Chrome Miners Co-op",
+    "Lichtenburg Alluvial Diggers Co-op",
+    "Matlosana Tailings Co-op",
+    "Madibeng Stone Works",
+    "Moretele Aggregates Co-op",
+    "Ramotshere Fluorspar Group",
+  ],
+  flagged: "Matlosana Tailings Co-op",
+  suppliers: ["Equipment supplier A", "Fuel supplier B", "Assay lab C", "Haulage contractor D"],
+  txTypes: [
+    ["Pre-funding tranche disbursed", 40000, 400000],
+    ["Equipment voucher redeemed at supplier", 15000, 120000],
+    ["Buyer payment into escrow", 200000, 2500000],
+    ["Royalty remitted to state", 5000, 90000],
+    ["Lot sealed at hub", 0, 0],
+    ["Assay result published", 0, 0],
+    ["Miner payout split", 20000, 300000],
+  ],
+  instruments: [
+    { type: "Export letter of credit", purpose: "Chrome ore to China importer, 5,000 t", amount: 18.6e6, stage: 2 },
+    { type: "Export letter of credit", purpose: "Fluorspar to USA buyer", amount: 4.9e6, stage: 3, flag: "Discrepancy in documents" },
+    { type: "Standby letter of credit", purpose: "Buyer payment security, local smelter", amount: 7.5e6, stage: 2 },
+    { type: "Pre-export finance", purpose: "Advance against verified chrome offtake", amount: 6.2e6, stage: 3 },
+    { type: "Escrow facility", purpose: "Dimension stone sale, China", amount: 2.4e6, stage: 4 },
+    { type: "Equipment lease", purpose: "Mechanised screening plant, 2 co-ops", amount: 3.8e6, stage: 2 },
+  ],
+  book: 27.9e6,
+  facilities: 148,
+  flexCap: 1500000,
+  factors: [
+    "Production record",
+    "Sales through the platform",
+    "Repayment history",
+    "Permits and safety record",
+    "Chain of custody score",
+  ],
+  esgIntro:
+    "Prove that small-scale mining funded by government is safer, cleaner and formal - the evidence international buyers and funders now demand before they buy.",
+  esg: {
+    stats: [
+      ["1,240 t", "CO2e from diesel, tracked per lot"],
+      ["86 ha", "Land rehabilitated"],
+      ["0", "Mercury used in gold processing"],
+      ["41%", "Cooperative members under 35"],
+    ],
+    chartTitle: "Land rehabilitated, hectares cumulative",
+    series: [4, 9, 15, 22, 31, 38, 47, 55, 66, 75, 86],
+    esd: [
+      ["Equipment and mechanisation", 11.8e6],
+      ["Safety and training", 5.2e6],
+      ["Cooperative formation", 3.4e6],
+      ["Processing and beneficiation", 2.6e6],
+    ],
+    social: [
+      ["Miners formally registered", "265", "600", 44],
+      ["Lost-time injuries", "3", "0", 70],
+      ["Miners paid by bank or wallet", "98%", "100%", 98],
+      ["Women in cooperatives", "22%", "35%", 63],
+    ],
+  },
+  marketIntro:
+    "Commodity indices and a want-to-buy, want-to-sell board connecting cooperatives with verified local beneficiators and importers in China, the USA and other markets.",
+  market: ["Gold", "Platinum", "Palladium", "Chrome ore", "Fluorspar", "USD/ZAR"],
+
+  products: ["Chrome ore", "Fluorspar", "Dimension stone", "Aggregates", "Rough diamonds", "Gold dore"],
+  qtyHint: "e.g. 1,000 t",
+  listings: {
+    buy: [
+      { prod: "Chrome ore", qty: "5,000 t monthly", who: "Stainless steel producer, China (verified)", terms: "Export LC" },
+      { prod: "Chrome ore", qty: "2,000 t monthly", who: "Ferrochrome smelter, SA (verified)", terms: "Escrow" },
+      { prod: "Fluorspar", qty: "800 t", who: "Minerals trader, USA (verified)", terms: "Export LC" },
+    ],
+    sell: [
+      { prod: "Chrome ore", qty: "1,200 t", who: "Bophirima Chrome Miners Co-op", terms: "40-42% Cr2O3, FCA hub" },
+      { prod: "Dimension stone", qty: "64 blocks", who: "Madibeng Stone Works", terms: "Grade A" },
+      { prod: "Rough diamonds", qty: "38.4 ct", who: "Lichtenburg Alluvial Diggers Co-op", terms: "Via regulator channel only" },
+    ],
+  },
+
+  farmers: [],
+  coops: [
+    { id: "NW-C-014", name: "Bophirima Chrome Miners Co-op", commodity: "Chrome ore", members: 86, status: "Exporting", score: 84 },
+    { id: "NW-C-021", name: "Lichtenburg Alluvial Diggers Co-op", commodity: "Alluvial diamonds", members: 42, status: "Selling locally", score: 77 },
+    { id: "NW-C-027", name: "Matlosana Tailings Co-op", commodity: "Gold (tailings)", members: 64, status: "Permit pending", score: 58 },
+    { id: "NW-C-033", name: "Madibeng Stone Works", commodity: "Dimension stone", members: 23, status: "Selling locally", score: 71 },
+    { id: "NW-C-038", name: "Moretele Aggregates Co-op", commodity: "Aggregates", members: 31, status: "Registered", score: 46 },
+    { id: "NW-C-045", name: "Ramotshere Fluorspar Group", commodity: "Fluorspar", members: 19, status: "Verified", score: 55 },
+  ],
+};
