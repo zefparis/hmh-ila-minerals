@@ -2,7 +2,7 @@
   "name": "hmh-ila-minerals",
   "version": "1.0.0",
   "private": true,
-  "description": "HMH ILA - North West Agri and Minerals platform prototypes",
+  "description": "HMH ILA Minerals platform prototype for AU Metals and Investment",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

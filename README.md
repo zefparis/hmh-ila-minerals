@@ -1,7 +1,7 @@
 # HMH ILA Minerals — Cooperative Export Platform
 
-Cooperative export platform prepared by ILA South Africa with HMH Group, for discussion with the
-North West Provincial Government: small-scale miners join a registered cooperative which aggregates,
+Cooperative export platform prepared by ILA South Africa with HMH Group, for discussion between
+AU Metals and Investment, buyers and investors: small-scale miners join a registered cooperative which aggregates,
 grades and sells through one compliant channel — to local smelters and refiners first, and to verified
 importers — with royalties captured and miners paid on proof of sale.
 
@@ -22,7 +22,7 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000 — `/` redirects to `/gov` (Government dashboard).
+Open http://localhost:3000 — `/` redirects to `/investor` (Investor dashboard).
 
 Useful checks:
 
@@ -44,7 +44,7 @@ npm run lint    # eslint (next/core-web-vitals + typescript)
 app/
   layout.tsx                 root layout: fonts, theme boot script, viewport
   globals.css                design system: palettes, components, responsive rules
-  page.tsx                   / -> redirect to the default module (/gov)
+  page.tsx                   / -> redirect to the default module (/investor)
   not-found.tsx              custom 404
   icon.svg                   favicon
   [module]/
@@ -60,13 +60,13 @@ components/
   charts.tsx                 SVG charts: LiveLine, Spark, TwoLine, MonthBars, BarRows,
                              DistrictMap, Timeline, CameraGrid, FunnelRows, Steps
   modules/
-    shared.tsx               Gov dashboard, Bank dashboard, Vetting, ESG, Market, Gateway
+    shared.tsx               Investor dashboard, Bank dashboard, Vetting, ESG, Market, Gateway
     minerals.tsx             Minerals modules (overview, coop, permit, assay, chain,
                              trade, funds & royalties, prices & risk, site security)
     index.ts                 module id -> component map
 data/
   types.ts                   PlatformCfg (typed equivalent of window.ILA_CFG)
-  minerals.ts                Minerals platform config: modules, districts, parties, instruments, ...
+  minerals.ts                Minerals platform config: modules, countries, parties, instruments, ...
   index.ts                   exports CFG
 lib/
   sim.ts                     seeded initial state, tick logic, SHA-256 hash chain, formatters

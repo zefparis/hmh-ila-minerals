@@ -50,10 +50,10 @@ export interface PlatformCfg {
   brandName: string;
   /** Small line under the brand, e.g. "Agri & SMME platform" */
   brandTag: string;
-  /** Browser title base, e.g. "HMH ILA - North West Agri Platform" */
+  /** Browser title base, e.g. "HMH ILA Minerals - Cooperative Export Platform" */
   siteTitle: string;
   /** Label in the top bar */
-  provinceLabel: string;
+  regionLabel: string;
   homeBlurb: string;
   modules: ModuleDef[];
   defaultModule: string;
@@ -62,8 +62,8 @@ export interface PlatformCfg {
   whoPl: string;
   alloc: number;
   stopped: number;
-  govIntro: string;
-  districts: string[];
+  investorIntro: string;
+  countries: string[];
   parties: string[];
   flagged: string;
   suppliers: string[];

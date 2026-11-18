@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useState, type ReactNode } from "react";
 import type { PlatformCfg } from "@/data/types";
 import { CFG } from "@/data";
-import { SimProvider } from "./SimContext";
+import { SimProvider, useSim } from "./SimContext";
+import { CurrencyButton } from "./CurrencyButton";
 import { Ticker } from "./Ticker";
 import { ThemeButton } from "./ThemeButton";
 import { ToastHost } from "./Toast";
@@ -51,9 +52,28 @@ function Nav({ cfg, active, onNavigate }: { cfg: PlatformCfg; active: string; on
       <div className="rail-foot">
         Prepared by ILA South Africa with HMH Group.
         <br />
-        For discussion with the North West Provincial Government.
+        For discussion between AU Metals and Investment, buyers and investors.
       </div>
     </>
+  );
+}
+
+function CountrySelect() {
+  const { cfg, sim, actions } = useSim();
+  return (
+    <select
+      className="country-sel"
+      value={sim.country}
+      onChange={(e) => actions.selectCountry(+e.target.value)}
+      aria-label="Country"
+    >
+      <option value={-1}>Africa (all)</option>
+      {cfg.countries.map((c, i) => (
+        <option key={c} value={i}>
+          {c}
+        </option>
+      ))}
+    </select>
   );
 }
 
@@ -112,9 +132,11 @@ export function PlatformShell({ children }: { children: ReactNode }) {
                   </svg>
                   Menu
                 </button>
-                <div className="province">{cfg.provinceLabel}</div>
+                <div className="province">{cfg.regionLabel}</div>
+                <CountrySelect />
               </div>
               <div className="topbar-right">
+                <CurrencyButton />
                 <ThemeButton />
               </div>
             </div>

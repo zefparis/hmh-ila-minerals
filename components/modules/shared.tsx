@@ -5,15 +5,23 @@ import { useSim } from "@/components/SimContext";
 import { toast } from "@/components/Toast";
 import { Flag, FlagText, Panel, Src, Stat, ViewHead, XPill } from "@/components/ui";
 import { HBar, LiveLine, Spark, Steps } from "@/components/charts";
-import { fM, fR, stagesOf } from "@/lib/sim";
+import { curSym, fM, fR, stagesOf, toCur } from "@/lib/sim";
 
-/* ---------- Government dashboard ---------- */
+/* ---------- Investor dashboard ---------- */
 
-const DIST_SPLIT = [0.31, 0.27, 0.24, 0.18];
-const DIST_USED = [0.52, 0.38, 0.44, 0.29];
-const DIST_VER = [0.9, 0.78, 0.86, 0.81];
+/** Deterministic pseudo-random in [0, 1) keyed on country index + field. */
+const det = (i: number, k: number) => {
+  const x = Math.sin(i * 127.1 + k * 311.7) * 43758.5453;
+  return x - Math.floor(x);
+};
+/** Share of total funding allocated to country i (2-17%). */
+const cShare = (i: number) => 0.02 + det(i, 1) * 0.15;
+/** Share of a country's allocation that has been disbursed (30-75%). */
+const cUsed = (i: number) => 0.3 + det(i, 2) * 0.45;
+/** Share of disbursed funds verified on the ground (70-98%). */
+const cVer = (i: number) => 0.7 + det(i, 3) * 0.28;
 
-export function GovDash() {
+export function InvestorDash() {
   const { cfg, sim, actions } = useSim();
   const [vres, setVres] = useState<ReactNode>(null);
 
@@ -32,12 +40,12 @@ export function GovDash() {
   };
   const onTamper = async () => {
     const n = await actions.tamper();
-    if (n) setVres(`Record ${n} amount changed by R 50,000. Now press Verify ledger.`);
+    if (n) setVres(`Record ${n} amount changed by ${fR(50000)}. Now press Verify ledger.`);
   };
 
   return (
     <>
-      <ViewHead title="Government dashboard">{cfg.govIntro}</ViewHead>
+      <ViewHead title="Investor dashboard">{cfg.investorIntro}</ViewHead>
       <div className="grid g4">
         <Stat v={fM(sim.alloc)} l="Pre-funding budget allocated" />
         <Stat v={fM(sim.committed)} l={"Committed to approved " + cfg.whoPl} />
@@ -48,8 +56,13 @@ export function GovDash() {
         />
       </div>
       <div className="grid g2 mt">
-        <Panel title="Disbursed versus verified, R millions">
-          <LiveLine series={[sim.d, sim.v]} colors={["var(--brand)", "var(--ok)"]} area label="Disbursed versus verified" />
+        <Panel title={"Disbursed versus verified, " + curSym() + " millions"}>
+          <LiveLine
+            series={[sim.d.map(toCur), sim.v.map(toCur)]}
+            colors={["var(--brand)", "var(--ok)"]}
+            area
+            label="Disbursed versus verified"
+          />
           <div className="x-legend">
             <span>
               <b style={{ background: "var(--brand)" }} />
@@ -61,19 +74,34 @@ export function GovDash() {
             </span>
           </div>
         </Panel>
-        <Panel title="Budget trace by district">
-          {cfg.districts.map((d, i) => {
-            const a = sim.alloc * DIST_SPLIT[i];
-            const u = a * DIST_USED[i];
-            const vv = u * DIST_VER[i];
+        <Panel title="Funding trace by country">
+          <div className="form" style={{ marginBottom: 12 }}>
+            <label>
+              Country
+              <select value={sim.country} onChange={(e) => actions.selectCountry(+e.target.value)}>
+                <option value={-1}>Africa (all)</option>
+                {cfg.countries.map((c, i) => (
+                  <option key={c} value={i}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          {(() => {
+            const i = sim.country;
+            const a = i >= 0 ? sim.alloc * cShare(i) : sim.alloc;
+            const u = i >= 0 ? a * cUsed(i) : sim.disbursed;
+            const vv = i >= 0 ? u * cVer(i) : sim.verified;
             return (
-              <div style={{ marginBottom: 12 }} key={d}>
-                <b style={{ fontSize: 14 }}>{d}</b>
+              <div style={{ marginBottom: 12 }}>
+                <b style={{ fontSize: 14 }}>{i >= 0 ? cfg.countries[i] : "Africa (all)"}</b>
                 <HBar l="Disbursed" val={u} max={a} txt={fM(u) + " of " + fM(a)} />
                 <HBar l="Verified" val={vv} max={a} txt={Math.round((vv / u) * 100) + "% of disbursed"} cls="v" />
               </div>
             );
-          })}
+          })()}
+          <Src>Per-country figures are illustrative.</Src>
         </Panel>
       </div>
       <Panel title="Audit ledger" className="mt">
@@ -123,12 +151,12 @@ export function GovDash() {
       <div className="grid g2 mt">
         <Panel title="Compliance and audit readiness">
           {[
-            "Every rand linked to a beneficiary, a purpose and proof of delivery",
-            "Capture, approval and release done by different officials",
+            "Every payment linked to a beneficiary, a purpose and proof of delivery",
+            "Capture, approval and release done by different parties",
             "Tamper-evident audit trail, exportable for auditors",
-            "Designed for POPIA compliance",
+            "Designed for data-protection compliance (POPIA and equivalents)",
             "KYC, KYB and AML screening planned for every beneficiary, supplier and buyer",
-            "To be reviewed against South African regulation before any deployment",
+            "To be reviewed against applicable national regulation before any deployment",
           ].map((t) => (
             <FlagText tone="ok" key={t}>
               {t}
@@ -136,7 +164,7 @@ export function GovDash() {
           ))}
           <Src>Design intent, not a certification. Compliance to be confirmed with legal counsel.</Src>
         </Panel>
-        <Panel title="Controls that protect government money">
+        <Panel title="Controls that protect investor capital">
           <div className="grid g2" style={{ gap: 10, marginBottom: 10 }}>
             <Stat v={fM(sim.stopped)} l="Payments stopped by controls" />
             <Stat v={String(sim.matched)} l="Trades matched this session" />
@@ -563,8 +591,8 @@ export function Gateway() {
         <Stat v="0.4%" l="Payments failed or reversed" />
       </div>
       <div className="grid g2 mt">
-        <Panel title="Payment volume, R millions per interval">
-          <LiveLine series={[sim.vol]} colors={["var(--sky)"]} area label="Payment volume" />
+        <Panel title={"Payment volume, " + curSym() + " millions per interval"}>
+          <LiveLine series={[sim.vol.map(toCur)]} colors={["var(--sky)"]} area label="Payment volume" />
         </Panel>
         <Panel title="Gateway security">
           <div className="table-wrap">
@@ -637,12 +665,12 @@ export function Gateway() {
               <tr>
                 <td>Milestone tranches</td>
                 <td>Pre-funding released only when the previous tranche is verified</td>
-                <td>Government budget</td>
+                <td>Investor funds</td>
               </tr>
               <tr>
                 <td>Closed-loop vouchers</td>
                 <td>Support spent only with approved suppliers, not withdrawn as cash</td>
-                <td>Government budget</td>
+                <td>Investor funds</td>
               </tr>
               <tr>
                 <td>Buyer escrow</td>

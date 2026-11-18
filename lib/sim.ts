@@ -39,6 +39,8 @@ export interface SimState {
   farmers: Farmer[];
   coops: Coop[];
   stageFilter: string;
+  /** Index into cfg.countries, or -1 for "Africa (all)". */
+  country: number;
   gw: GatewayFeed;
   tk: number;
 }
@@ -57,8 +59,28 @@ function mulberry32(a: number) {
 export const rnd = (a: number, b: number) => a + Math.random() * (b - a);
 export const pick = <T,>(a: T[]) => a[Math.floor(Math.random() * a.length)];
 
-export const fR = (n: number) => "R " + Math.round(n).toLocaleString("en-ZA");
-export const fM = (n: number) => "R " + (n / 1e6).toFixed(1) + "m";
+/* ---------- display currency (ZAR or USD, indicative conversion) ---------- */
+
+export type Currency = "ZAR" | "USD";
+/** Indicative rate used by the top-bar currency toggle. */
+export const ZAR_PER_USD = 18.2;
+
+let currency: Currency = "ZAR";
+export function getCurrency(): Currency {
+  return currency;
+}
+export function setCurrency(c: Currency): void {
+  if (c === currency) return;
+  currency = c;
+  bumpSim();
+}
+/** Convert a ZAR amount to the active display currency. Linear, so it works on millions too. */
+export const toCur = (n: number) => (currency === "USD" ? n / ZAR_PER_USD : n);
+export const curSym = () => (currency === "USD" ? "$" : "R");
+
+export const fR = (n: number) =>
+  curSym() + " " + Math.round(toCur(n)).toLocaleString(currency === "USD" ? "en-US" : "en-ZA");
+export const fM = (n: number) => curSym() + " " + (toCur(n) / 1e6).toFixed(1) + "m";
 
 export const LC = ["Applied", "Issued", "Goods shipped", "Documents presented", "Documents compliant", "Paid"];
 export const GEN = ["Applied", "Approved", "Active", "Drawn", "Repaying", "Closed"];
@@ -93,6 +115,7 @@ export function createSimState(cfg: PlatformCfg): SimState {
     farmers: cfg.farmers.map((f) => ({ ...f })),
     coops: cfg.coops.map((c) => ({ ...c })),
     stageFilter: "All",
+    country: -1,
     gw: {
       resp: "214 ms (fictional)",
       fraud: "612 transactions per minute (fictional)",

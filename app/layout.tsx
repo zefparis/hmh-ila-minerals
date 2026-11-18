@@ -16,7 +16,7 @@ const body = Public_Sans({
 
 export const metadata: Metadata = {
   title: "HMH ILA Minerals - Cooperative Export Platform",
-  description: "HMH ILA Minerals cooperative export platform for the North West Provincial Government.",
+  description: "HMH ILA Minerals cooperative export platform for discussion between AU Metals and Investment, buyers and investors.",
 };
 
 export const viewport: Viewport = {

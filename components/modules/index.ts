@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import { BankDash, Esg, Gateway, GovDash, Market, Vetting } from "./shared";
+import { BankDash, Esg, Gateway, InvestorDash, Market, Vetting } from "./shared";
 import {
   MinAssay,
   MinChain,
@@ -14,7 +14,7 @@ import {
 
 export const MODULES: Record<string, ComponentType> = {
   overview: MinOverview,
-  gov: GovDash,
+  investor: InvestorDash,
   bank: BankDash,
   finance: MinFinance,
   coop: MinCoop,

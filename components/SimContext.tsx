@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import type { PlatformCfg } from "@/data/types";
-import { getSimStore, simVersion, subscribeSim, type SimState } from "@/lib/sim";
+import { getSimStore, setCurrency, simVersion, subscribeSim, type SimState } from "@/lib/sim";
 import { seedSim, simActions, tickOnce, type SimActions } from "@/lib/actions";
 
 interface SimCtxValue {
@@ -33,6 +33,12 @@ export function useSim(): SimCtxValue {
  */
 export function SimProvider({ cfg, children }: { cfg: PlatformCfg; children: ReactNode }) {
   useEffect(() => {
+    try {
+      const c = localStorage.getItem("ila-currency");
+      if (c === "USD" || c === "ZAR") setCurrency(c);
+    } catch {
+      /* storage unavailable */
+    }
     seedSim(cfg);
     const id = setInterval(() => tickOnce(cfg), 2000);
     return () => clearInterval(id);

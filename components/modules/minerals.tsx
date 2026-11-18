@@ -5,7 +5,7 @@ import { useSim } from "@/components/SimContext";
 import { toast } from "@/components/Toast";
 import { Bar, Flag, FlagText, Panel, Pill, Src, Stat, ViewHead } from "@/components/ui";
 import { CameraGrid, MonthBars, Timeline } from "@/components/charts";
-import { fR } from "@/lib/sim";
+import { curSym, fM, fR, toCur } from "@/lib/sim";
 
 const COOP_STATUS: Record<string, string> = {
   Exporting: "p-dark",
@@ -105,8 +105,8 @@ export function MinOverview() {
       <div className="grid g4">
         <Stat v={coops.length} l="Cooperatives on the platform" />
         <Stat v={coops.reduce((a, c) => a + c.members, 0)} l="Registered miners" />
-        <Stat v="R 41.6m" l="Sales through the channel this year" />
-        <Stat v="R 1.9m" l="Royalties and levies captured" />
+        <Stat v={fM(41.6e6)} l="Sales through the channel this year" />
+        <Stat v={fM(1.9e6)} l="Royalties and levies captured" />
       </div>
       <div className="grid g2 mt">
         <Panel title="What leadership sees">
@@ -126,10 +126,10 @@ export function MinOverview() {
         <Panel title="Why a cooperative channel">
           <p className="muted" style={{ marginTop: 0 }}>
             Individual small miners cannot meet buyer volumes, assay requirements or compliance checks. A cooperative
-            can - if every lot is traceable. That traceability is what keeps illegal material out and lets the province
+            can - if every lot is traceable. That traceability is what keeps illegal material out and lets investors
             prove the channel is clean.
           </p>
-          <Flag tone="ok" title="For the MEC for Finance">
+          <Flag tone="ok" title="For investors and lenders">
             Royalties, tax and levies captured at source, not lost to informal trade
           </Flag>
           <Flag tone="ok" title="For economic development">
@@ -512,6 +512,7 @@ export function MinTrade() {
 }
 
 export function MinFinance() {
+  useSim();
   const [w, setW] = useState({ sale: 4800000, roy: 3, log: 12, coop: 8, fin: 10 });
   const roy = (w.sale * w.roy) / 100;
   const log = (w.sale * w.log) / 100;
@@ -530,18 +531,18 @@ export function MinFinance() {
   return (
     <>
       <ViewHead title="Funds and royalties">
-        For the MEC for Finance: every sale pays into escrow, royalties and levies are deducted at source, and miners
+        For investors: every sale pays into escrow, royalties and levies are deducted at source, and miners
         are paid their share directly. Pre-export finance lets cooperatives get paid before the ship sails.
       </ViewHead>
       <div className="grid g2">
         <Panel title="Payment waterfall calculator">
           <div className="form" style={{ marginBottom: 12 }}>
             <label>
-              Sale value (R)
+              {"Sale value (" + curSym() + ")"}
               <input
                 type="number"
-                value={w.sale}
-                onChange={(e) => setW({ ...w, sale: num(e.target.value) })}
+                value={Math.round(toCur(w.sale))}
+                onChange={(e) => setW({ ...w, sale: num(e.target.value) / toCur(1) })}
               />
             </label>
             <label>
@@ -607,15 +608,19 @@ export function MinFinance() {
 }
 
 export function MinSight() {
+  useSim();
   return (
     <>
       <ViewHead title="Prices and risk">
-        Commodity prices, volumes and risk on one screen, so cooperatives know when to sell and the province sees the
+        Commodity prices, volumes and risk on one screen, so cooperatives know when to sell and investors see the
         real value of small-scale mining.
       </ViewHead>
       <div className="grid g2">
-        <Panel title="Monthly sales through the channel, R millions">
-          <MonthBars labels={["Apr", "May", "Jun", "Jul", "Aug", "Sep"]} v={[3.1, 4.4, 5.2, 6.8, 8.9, 13.2]} />
+        <Panel title={"Monthly sales through the channel, " + curSym() + " millions"}>
+          <MonthBars
+            labels={["Apr", "May", "Jun", "Jul", "Aug", "Sep"]}
+            v={[3.1, 4.4, 5.2, 6.8, 8.9, 13.2].map(toCur)}
+          />
         </Panel>
         <Panel title="Risk watch">
           <Flag title="Illegal mining pressure">

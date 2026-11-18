@@ -13,6 +13,7 @@ export interface SimActions {
   registerFarmer: (f: { name: string; district: number; type: string; size: string }) => void;
   registerCoop: (c: { name: string; commodity: string; members: number }) => void;
   setStageFilter: (s: string) => void;
+  selectCountry: (i: number) => void;
 }
 
 /**
@@ -115,7 +116,7 @@ export function simActions(cfg: PlatformCfg): SimActions {
     registerFarmer(f) {
       const sim = getSimStore(cfg);
       sim.farmers.unshift({
-        id: "NW-F-00" + (sim.farmers.length + 231),
+        id: "AF-F-00" + (sim.farmers.length + 231),
         name: f.name,
         district: f.district,
         type: f.type,
@@ -131,7 +132,7 @@ export function simActions(cfg: PlatformCfg): SimActions {
     registerCoop(c) {
       const sim = getSimStore(cfg);
       sim.coops.push({
-        id: "NW-C-0" + (46 + sim.coops.length),
+        id: "AF-C-0" + (46 + sim.coops.length),
         name: c.name,
         commodity: c.commodity,
         members: c.members || 1,
@@ -143,6 +144,10 @@ export function simActions(cfg: PlatformCfg): SimActions {
     },
     setStageFilter(s) {
       getSimStore(cfg).stageFilter = s;
+      bumpSim();
+    },
+    selectCountry(i) {
+      getSimStore(cfg).country = i;
       bumpSim();
     },
   };
